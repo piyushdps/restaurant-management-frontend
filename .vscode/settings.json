@@ -1,0 +1,14 @@
+{
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "files.insertFinalNewline": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "css.lint.validProperties": ["composes"],
+    "liveServer.settings.port": 4900,
+    "liveServer.settings.mount": [["/", "./out"]],
+    "cSpell.words": [],
+    "[handlebars]": {
+      "editor.formatOnSave": true
+    }
+  }
+  
