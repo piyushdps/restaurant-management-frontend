@@ -3,16 +3,14 @@
 import { FormEvent, LegacyRef, useReducer, useRef } from 'react';
 import { resultOf } from '../../../../utils/resultOf';
 import '../styles.css';
-import {
-  login as loginAPI,
-  getRestaurants as getRestaurantsApi,
-} from './networkCalls';
+import { login as loginAPI } from './networkCalls';
 import SimpleReactValidator from 'simple-react-validator';
 import useForceUpdate from '@/hooks/useForceRender';
 import { httpRequest } from '../../../../services/httpService';
 import Link from 'next/link';
 import toastify, { ToastVariant } from '@/utils/toastify';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/store/useUserStore';
 
 export default function Home() {
   const emailInputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -20,7 +18,7 @@ export default function Home() {
 
   const forceUpdate = useForceUpdate();
   const router = useRouter();
-
+  const { setUserData } = useUserStore();
   const simpleValidator = useRef(
     new SimpleReactValidator({ autoForceUpdate: { forceUpdate: forceUpdate } }),
   );
@@ -38,8 +36,16 @@ export default function Home() {
           toastId: 1,
         });
       else {
-        httpRequest.setAuthHeader(`Bearer ${response.tokens.access.token}`);
-        router.push('/');
+        window.localStorage.setItem(
+          'refreshToken',
+          response.tokens.refresh.token,
+        );
+        setUserData({
+          ...response.user,
+          authToken: `Bearer ${response.tokens.access.token}`,
+          refreshToken: response.tokens.refresh.token,
+        });
+        router.push('/dashboard');
       }
     } else {
       simpleValidator.current.showMessages();
@@ -93,10 +99,11 @@ export default function Home() {
       <div className="my-2 w-full flex justify-center">
         <button
           onClick={login}
+          type="submit"
           className="uppercase text-sm font-bold tracking-wide bg-blue-900 text-gray-100 p-3 rounded-lg w-1/3
                       focus:outline-none focus:shadow-outline"
         >
-          Send Message
+          Login
         </button>
       </div>
       <p className="w-full text-center">

@@ -13,12 +13,3 @@ export const login = async (loginData: LoginDataType) => {
   });
   return data;
 };
-
-export const getRestaurants = async () => {
-  const { data } = await httpRequest({
-    type: RequestType.GET,
-
-    url: '/v1/restaurants/all',
-  });
-  return data;
-};
